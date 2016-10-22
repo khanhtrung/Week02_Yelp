@@ -10,10 +10,10 @@ import AFNetworking
 import BDBOAuth1Manager
 
 // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
-let yelpConsumerKey = "SpmE5nUarv0QwhTT_zEV4Q"
-let yelpConsumerSecret = "GX10liiBZyOpaZgGdpcxixOs8DU"
-let yelpToken = "eqVTvUvuqzTc4vltnnxuPRa1d2sO5eQn"
-let yelpTokenSecret = "QdCSmGO1Nf0WftqR8WR8csxYfhU"
+let YELP_CONSUMER_KEY = "SpmE5nUarv0QwhTT_zEV4Q"
+let YELP_CONSUMER_SECRET = "GX10liiBZyOpaZgGdpcxixOs8DU"
+let YELP_TOKEN = "eqVTvUvuqzTc4vltnnxuPRa1d2sO5eQn"
+let YELP_TOKEN_SECRET = "QdCSmGO1Nf0WftqR8WR8csxYfhU"
 
 enum YelpSortMode: Int {
     case bestMatched = 0, distance, highestRated
@@ -26,7 +26,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
     static var _shared: YelpClient?
     static func shared() -> YelpClient! {
         if _shared == nil {
-            _shared = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
+            _shared = YelpClient(consumerKey: YELP_CONSUMER_KEY, consumerSecret: YELP_CONSUMER_SECRET, accessToken: YELP_TOKEN, accessSecret: YELP_TOKEN_SECRET)
         }
         return _shared
     }
