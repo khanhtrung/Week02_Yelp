@@ -124,7 +124,9 @@ extension BusinessesViewController: UISearchBarDelegate{
 
 //MARK: - FiltersViewControler methods
 extension BusinessesViewController: FiltersViewControllerDelegate {
-    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String]) {
+        //print("get data from filterVC")
+        BusinessFilters.sharedInstance.categories = filters
         doSearch()
     }
 }

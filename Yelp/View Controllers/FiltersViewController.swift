@@ -9,7 +9,7 @@
 import UIKit
 
 @objc protocol FiltersViewControllerDelegate {
-    @objc func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:AnyObject])
+    @objc func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String])
 }
 class FiltersViewController: UIViewController {
 
@@ -23,7 +23,7 @@ class FiltersViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        categories = Business.yelpCategories()
+        categories = YelpClient.yelpCategories()
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -36,8 +36,15 @@ class FiltersViewController: UIViewController {
     @IBAction func onSearchButtonTapped(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
         
-        var filters = [String:AnyObject]()
-         delegate?.filtersViewController(filtersViewController: self, didUpdateFilters: filters)
+        var filters = [String]()
+        for (row, isSelected) in switchStates{
+            if isSelected {
+                filters.append(categories[row]["code"]!)
+            }
+        }
+        if filters.count > 0 {
+            delegate?.filtersViewController(filtersViewController: self, didUpdateFilters: filters)
+        }
     }
     
     @IBAction func onCancelButtonTapped(_ sender: AnyObject) {
