@@ -2,7 +2,7 @@
 
 **Yelp** is a Yelp search app using the [Yelp API](https://www.yelp.com/developers/documentation/v2/overview).
 
-Time spent: **10** hours spent in total
+Time spent: **14** hours spent in total
 
 ## User Stories
 
