@@ -14,7 +14,7 @@ class BusinessesViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     var businesses: [Business]!
     var searchBar: UISearchBar!
-    var businessFilters = BusinessFilters()
+    //var businessFilters = BusinessFilters()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -116,7 +116,7 @@ extension BusinessesViewController: UISearchBarDelegate{
     // called when cancel button pressed
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
-        BusinessFilters.sharedInstance.searchTerm = ""
+        BusinessFilters.sharedInstance.clear()
         searchBar.resignFirstResponder()
         doSearch()
     }

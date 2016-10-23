@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		234123771DBA5F0300AB1E30 /* BusinessCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234123761DBA5F0300AB1E30 /* BusinessCell.swift */; };
+		237390E91DBCF70300ECC3C4 /* DropdownCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237390E81DBCF70300ECC3C4 /* DropdownCell.swift */; };
+		237390EB1DBCF71100ECC3C4 /* CheckCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237390EA1DBCF71100ECC3C4 /* CheckCell.swift */; };
 		23F2B7A51DBB6CFA001685AC /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2B7A41DBB6CFA001685AC /* SwitchCell.swift */; };
 		23F2B7A71DBB6ECC001685AC /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2B7A61DBB6ECC001685AC /* FiltersViewController.swift */; };
 		23F2B7A91DBC7948001685AC /* BusinessFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F2B7A81DBC7948001685AC /* BusinessFilters.swift */; };
@@ -23,6 +25,8 @@
 
 /* Begin PBXFileReference section */
 		234123761DBA5F0300AB1E30 /* BusinessCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BusinessCell.swift; sourceTree = "<group>"; };
+		237390E81DBCF70300ECC3C4 /* DropdownCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropdownCell.swift; sourceTree = "<group>"; };
+		237390EA1DBCF71100ECC3C4 /* CheckCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckCell.swift; sourceTree = "<group>"; };
 		23F2B7A41DBB6CFA001685AC /* SwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCell.swift; sourceTree = "<group>"; };
 		23F2B7A61DBB6ECC001685AC /* FiltersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
 		23F2B7A81DBC7948001685AC /* BusinessFilters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BusinessFilters.swift; sourceTree = "<group>"; };
@@ -57,6 +61,8 @@
 			children = (
 				234123761DBA5F0300AB1E30 /* BusinessCell.swift */,
 				23F2B7A41DBB6CFA001685AC /* SwitchCell.swift */,
+				237390E81DBCF70300ECC3C4 /* DropdownCell.swift */,
+				237390EA1DBCF71100ECC3C4 /* CheckCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -263,8 +269,10 @@
 			files = (
 				234123771DBA5F0300AB1E30 /* BusinessCell.swift in Sources */,
 				A581AE361DB5398F006544B2 /* BusinessesViewController.swift in Sources */,
+				237390EB1DBCF71100ECC3C4 /* CheckCell.swift in Sources */,
 				23F2B7A71DBB6ECC001685AC /* FiltersViewController.swift in Sources */,
 				A581AE341DB53945006544B2 /* YelpClient.swift in Sources */,
+				237390E91DBCF70300ECC3C4 /* DropdownCell.swift in Sources */,
 				A581AE321DB53860006544B2 /* Business.swift in Sources */,
 				23F2B7A91DBC7948001685AC /* BusinessFilters.swift in Sources */,
 				A5CA688E1DB3E1EA0085DCF9 /* AppDelegate.swift in Sources */,

@@ -27,4 +27,12 @@ class BusinessFilters {
     var deals: Bool?
     
     static let sharedInstance = BusinessFilters()
+    
+    func clear(){
+        searchTerm = nil
+        sort = nil
+        categories = nil
+        radius = nil
+        deals = nil
+    }
 }

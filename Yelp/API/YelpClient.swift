@@ -126,7 +126,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         
         // Deals filter
         if let deals = filters.deals {
-            params["deals_filter"] = deals as AnyObject?
+            params["deals_filter"] = (deals as Bool?) as AnyObject?
         }
         
         return params
