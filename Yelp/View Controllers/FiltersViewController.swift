@@ -19,11 +19,20 @@ class FiltersViewController: UIViewController {
     var categories: [[String:String]]!
     var switchStates = [Int:Bool]()
     
+    var sectionNames: [String]!
+    
+    var categoryNames: [String]!
+    var sortName: [String]!
+    var distanceName: [String]!
+    var dealsValue: [String]!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
         categories = YelpClient.yelpCategories()
+        createSections()
+        
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -50,28 +59,110 @@ class FiltersViewController: UIViewController {
     @IBAction func onCancelButtonTapped(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
     }
+    
+    
+    func createSections(){
+        
+        self.sectionNames = [String]()
+        self.sectionNames = ["Category","Sort","Distance","Deals"]
+        
+        self.categoryNames = [String]()
+        for item in self.categories {
+            self.categoryNames.append(item["name"]! as String)
+        }
+        
+        self.sortName = [String]()
+        self.sortName = ["Best matched","Distance","Highest Rated"]
+        
+        self.distanceName = [String]()
+        self.distanceName = ["5 mi","10 mi","15 mi"]
+        
+        self.dealsValue = [String]()
+        self.dealsValue = ["Offering a Deal"]
+    }
 }
 
+//MARK: - Table methods
 extension FiltersViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 4
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if categories != nil {
-            return categories.count
-        } else {
-            return 0 
+        switch section {
+        case 0: // Category
+            return self.categoryNames.count
+            
+        case 1: // Sort
+            return self.sortName.count
+            
+        case 2: // Distance
+            return self.distanceName.count
+            
+        case 3: // Deals
+            return dealsValue.count
+        default: return 0
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-        cell.switchLabel.text = categories[indexPath.row]["name"]
-        
-        cell.delegate = self
-        cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+        switch (indexPath as NSIndexPath).section {
+        case 0: // Category
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
 
-        return cell
+            cell.switchLabel.text = categories[indexPath.row]["name"]
+            cell.delegate = self
+            cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+            return cell
+        
+        case 1: // Sort
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+            
+            cell.switchLabel.text = sortName[indexPath.row]
+            cell.delegate = self
+            cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+            return cell
+        case 2: // Distance
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+            
+            cell.switchLabel.text = distanceName[indexPath.row]
+            cell.delegate = self
+            cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+            return cell
+        case 3: // Deals
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+            
+            cell.switchLabel.text = dealsValue[indexPath.row]
+            cell.delegate = self
+            cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+            return cell
+            
+//        case 1:
+//            if (indexPath as NSIndexPath).row == 0 {
+//                let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
+//                cell.onSwitch.isOn = switchOn
+//                cell.delegate = self
+//                return cell
+//            } else {
+//                let cell = tableView.dequeueReusableCell(withIdentifier: "SelectCell", for: indexPath) as! SelectCell
+//                let language = languages[(indexPath as NSIndexPath).row - 1]
+//                cell.languageLabel.text = language
+//                cell.checkImageView.isHidden = language != selectedLanguage
+//                return cell
+//            }
+            
+        default:
+            return UITableViewCell()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionNames[section] as String
     }
 }
 
+//MARK: - Switch methods
 extension FiltersViewController: SwitchCellDelegate {
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPath(for: switchCell)!
