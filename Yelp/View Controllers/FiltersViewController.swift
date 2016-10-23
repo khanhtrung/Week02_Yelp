@@ -12,11 +12,13 @@ let CATEGORY_NAME = "Category"
 let SORT_NAME = "Sort"
 let DISTANCE_NAME = "Distance"
 let DEALS_NAME = "Deals"
+let LIMIT_NAME = "Limit"
 
 let CATEGORY_INDEX = 0
 let SORT_INDEX = 1
 let DISTANCE_INDEX = 2
 let DEALS_INDEX = 3
+let LIMIT_INDEX = 4
 
 let SORT_BEST_MATCHED = "Best matched"
 let SORT_DISTANCE = "Distance"
@@ -29,6 +31,10 @@ let DISTANCE_5 = "5 miles"
 let DISTANCE_20 = "20 miles"
 
 let DEALS_OFFERING = "Offering a Deal"
+
+let LIMIT_5 = "5 results to return"
+let LIMIT_10 = "10 results to return"
+let LIMIT_15 = "15 results to return"
 
 
 @objc protocol FiltersViewControllerDelegate {
@@ -49,12 +55,14 @@ class FiltersViewController: UIViewController {
     var sortCheckStates = [Int:Bool]()
     var distanceCheckStates = [Int:Bool]()
     var dealsCheckStates = [Int:Bool]()
+    var limitCheckStates = [Int:Bool]()
     
     var categories: [[String:String]]!
     var categoryNames: [String]!
     var sortName: [String]!
     var distanceName: [String]!
     var dealsValue: [String]!
+    var limitName: [String]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,7 +102,7 @@ class FiltersViewController: UIViewController {
     
     func createSections(){
         self.sectionNames = [String]()
-        self.sectionNames = [CATEGORY_NAME,SORT_NAME,DISTANCE_NAME,DEALS_NAME]
+        self.sectionNames = [CATEGORY_NAME,SORT_NAME,DISTANCE_NAME,DEALS_NAME,LIMIT_NAME]
         
         self.categoryNames = [String]()
         for item in self.categories {
@@ -109,6 +117,9 @@ class FiltersViewController: UIViewController {
         
         self.dealsValue = [String]()
         self.dealsValue = [DEALS_OFFERING]
+        
+        self.limitName = [String]()
+        self.limitName = [LIMIT_5,LIMIT_10,LIMIT_15]
     }
 }
 
@@ -140,6 +151,9 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate {
             
         case DEALS_INDEX:
             return dealsValue.count
+            
+        case LIMIT_INDEX:
+            return self.limitName.count
         default: return 0
         }
     }
@@ -166,7 +180,10 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate {
             
         case DEALS_INDEX:
             return 44
-        default: return 300
+            
+        case LIMIT_INDEX:
+            return 44
+        default: return 60
         }
     }
     
@@ -213,6 +230,20 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate {
             cell.checkLabel.text = dealsValue[indexPath.row]
             cell.sectionName = DEALS_NAME
             cell.isChecked = dealsCheckStates[indexPath.row] ?? false
+            cell.delegate = self
+            return cell
+            
+        case LIMIT_INDEX:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCell", for: indexPath) as! CheckCell
+            cell.checkLabel.text = limitName[indexPath.row]
+            cell.sectionName = LIMIT_NAME
+            
+            // Check 15 results as Default
+            if (limitName[indexPath.row] == LIMIT_15) {
+                limitCheckStates[indexPath.row] = true
+                BusinessFilters.sharedInstance.limit = limitName.index(of:LIMIT_15)
+            }
+            cell.isChecked = limitCheckStates[indexPath.row] ?? false
             cell.delegate = self
             return cell
             
@@ -274,6 +305,20 @@ extension FiltersViewController: CheckCellDelegate {
                 distanceCheckStates[row] = cell.isChecked
             }
             BusinessFilters.sharedInstance.radius = distanceName.index(of: checkCell.checkLabel.text!)
+            
+        case LIMIT_NAME:
+            // Allow only one cell checked
+            for row in 0..<tableView.numberOfRows(inSection: LIMIT_INDEX){
+                let currentIndexPath = NSIndexPath(row: row, section: LIMIT_INDEX)
+                let cell = tableView.cellForRow(at: currentIndexPath as IndexPath) as! CheckCell
+                if currentIndexPath as IndexPath == indexPath{
+                    cell.isChecked = true
+                } else {
+                    cell.isChecked = false
+                }
+                limitCheckStates[row] = cell.isChecked
+            }
+            BusinessFilters.sharedInstance.limit = limitName.index(of: checkCell.checkLabel.text!)
             
         default:
             dealsCheckStates[indexPath.row] = value

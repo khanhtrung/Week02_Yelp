@@ -142,6 +142,22 @@ class YelpClient: BDBOAuth1RequestOperationManager {
             params["deals_filter"] = (deals as Bool?) as AnyObject?
         }
         
+        // Number of business results to return
+        if let limit = filters.limit {
+            
+            let selectedLimitType = limit
+            switch selectedLimitType {
+            case 0:
+                params["limit"] = (5) as AnyObject?
+            case 1:
+                params["limit"] = (10) as AnyObject?
+            case 2:
+                params["limit"] = (15) as AnyObject?
+            default:
+                break
+            }
+        }
+        
         print(params)
         
         return params

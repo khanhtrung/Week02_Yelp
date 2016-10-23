@@ -26,6 +26,9 @@ class BusinessFilters {
     // Whether to exclusively search for businesses with deals
     var deals: Bool?
     
+    // Number of business results to return
+    var limit: Int?
+    
     static let sharedInstance = BusinessFilters()
     
     func clear(){
@@ -34,5 +37,6 @@ class BusinessFilters {
         categories = nil
         radius = nil
         deals = nil
+        limit = nil
     }
 }
