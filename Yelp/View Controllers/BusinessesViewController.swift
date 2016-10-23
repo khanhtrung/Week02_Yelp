@@ -12,9 +12,8 @@ import MBProgressHUD
 class BusinessesViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    var businesses: [Business]!
+    var businesses = [Business]()
     var searchBar: UISearchBar!
-    //var businessFilters = BusinessFilters()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,13 +38,15 @@ class BusinessesViewController: UIViewController {
         MBProgressHUD.showAdded(to: self.view, animated: true)
         
         Business.searchUsingBusinessFilters() { (businesses: [Business]?, error: Error?) in
-            if let businesses = businesses {
-                self.businesses = businesses
-                self.tableView.reloadData()
-                
-                for business in businesses {                    
+            if let newBusinesses = businesses {
+                for business in newBusinesses {
                     print(business.name!)
                 }
+                
+                self.businesses.removeAll()
+                self.businesses.append(contentsOf: newBusinesses)
+                self.tableView.reloadData()
+                
                 MBProgressHUD.hide(for: self.view, animated: true)
             }
         }
@@ -78,11 +79,7 @@ class BusinessesViewController: UIViewController {
 extension BusinessesViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if businesses != nil {
-            return businesses!.count
-        } else {
-            return 0
-        }
+        return businesses.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

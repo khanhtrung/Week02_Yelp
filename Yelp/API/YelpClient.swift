@@ -65,7 +65,6 @@ class YelpClient: BDBOAuth1RequestOperationManager {
          if deals != nil {
          parameters["deals_filter"] = deals! as AnyObject?
          }
-        print(parameters)
         
         return self.get("search", parameters: parameters, success: { (operation: AFHTTPRequestOperation, response: Any) in
             if let response = response as? NSDictionary {
@@ -81,7 +80,6 @@ class YelpClient: BDBOAuth1RequestOperationManager {
     
     func search(completion: @escaping ([Business]?, Error?) -> ()) -> AFHTTPRequestOperation {
         let parameters = generateSearchParam()
-        print(parameters)
         
         return self.get("search", parameters: parameters, success: { (operation: AFHTTPRequestOperation, response: Any) in
             if let response = response as? NSDictionary {
@@ -121,13 +119,30 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         
         // Search radius. The max value is 40000 meters (25 miles)
         if let radius = filters.radius {
-            params["radius_filter"] = radius as AnyObject?
+            
+            let selectedRadiusType = radius
+            switch selectedRadiusType {
+            case 0:
+                break
+            case 1:
+                params["radius_filter"] = (0.3 * 1609.344) as AnyObject?
+            case 2:
+                params["radius_filter"] = (1 * 1609.344) as AnyObject?
+            case 3:
+                params["radius_filter"] = (5 * 1609.344) as AnyObject?
+            case 4:
+                params["radius_filter"] = (15 * 1609.344) as AnyObject?
+            default:
+                break
+            }
         }
         
         // Deals filter
         if let deals = filters.deals {
             params["deals_filter"] = (deals as Bool?) as AnyObject?
         }
+        
+        print(params)
         
         return params
     }

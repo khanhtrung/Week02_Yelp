@@ -8,14 +8,25 @@
 
 import UIKit
 
-let CATEGORY = "Category"
-let SORT = "Sort"
-let DISTANCE = "Distance"
-let DEALS = "Deals"
+let CATEGORY_NAME = "Category"
+let SORT_NAME = "Sort"
+let DISTANCE_NAME = "Distance"
+let DEALS_NAME = "Deals"
+
+let CATEGORY_INDEX = 0
+let SORT_INDEX = 1
+let DISTANCE_INDEX = 2
+let DEALS_INDEX = 3
 
 let SORT_BEST_MATCHED = "Best matched"
 let SORT_DISTANCE = "Distance"
 let SORT_HIGHEST_RATED = "Highest Rated"
+
+let DISTANCE_BEST_MATCHED = "Best matched"
+let DISTANCE_0_3 = "0.3 miles"
+let DISTANCE_1 = "1 mile"
+let DISTANCE_5 = "5 miles"
+let DISTANCE_20 = "20 miles"
 
 let DEALS_OFFERING = "Offering a Deal"
 
@@ -25,22 +36,25 @@ let DEALS_OFFERING = "Offering a Deal"
 }
 
 class FiltersViewController: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
     
     weak var delegate: FiltersViewControllerDelegate?
-    var categories: [[String:String]]!
-    var switchStates = [Int:Bool]()
-    
     var sectionNames: [String]!
     
+    var sortSwitchOn = true
+    var distanceSwitchOn = true
+    
+    var switchStates = [Int:Bool]()
+    var sortCheckStates = [Int:Bool]()
+    var distanceCheckStates = [Int:Bool]()
+    var dealsCheckStates = [Int:Bool]()
+    
+    var categories: [[String:String]]!
     var categoryNames: [String]!
     var sortName: [String]!
     var distanceName: [String]!
     var dealsValue: [String]!
-
-    var sortSwitchOn = true
-    var distanceSwitchOn = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,7 +66,7 @@ class FiltersViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -61,15 +75,17 @@ class FiltersViewController: UIViewController {
     @IBAction func onSearchButtonTapped(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
         
-        var filters = [String]()
+        var categoriesFilters = [String]()
         for (row, isSelected) in switchStates{
             if isSelected {
-                filters.append(categories[row]["code"]!)
+                categoriesFilters.append(categories[row]["code"]!)
             }
         }
-        if filters.count > 0 {
-            delegate?.filtersViewController(filtersViewController: self, didUpdateFilters: filters)
-        }
+        //        if categoriesFilters.count > 0 {
+        //BusinessFilters.sharedInstance.categories = categoriesFilters
+        delegate?.filtersViewController(filtersViewController: self, didUpdateFilters: categoriesFilters)
+        
+        //        }
     }
     
     @IBAction func onCancelButtonTapped(_ sender: AnyObject) {
@@ -78,7 +94,7 @@ class FiltersViewController: UIViewController {
     
     func createSections(){
         self.sectionNames = [String]()
-        self.sectionNames = [CATEGORY,SORT,DISTANCE,DEALS]
+        self.sectionNames = [CATEGORY_NAME,SORT_NAME,DISTANCE_NAME,DEALS_NAME]
         
         self.categoryNames = [String]()
         for item in self.categories {
@@ -89,7 +105,7 @@ class FiltersViewController: UIViewController {
         self.sortName = [SORT_BEST_MATCHED, SORT_DISTANCE, SORT_HIGHEST_RATED]
         
         self.distanceName = [String]()
-        self.distanceName = ["5 mi","10 mi","15 mi"]
+        self.distanceName = [DISTANCE_BEST_MATCHED,DISTANCE_0_3,DISTANCE_1,DISTANCE_5,DISTANCE_20]
         
         self.dealsValue = [String]()
         self.dealsValue = [DEALS_OFFERING]
@@ -110,19 +126,19 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 44
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
-        case sectionNames.index(of: CATEGORY)!:
+        case CATEGORY_INDEX:
             return self.categoryNames.count
             
-        case sectionNames.index(of: SORT)!:
+        case SORT_INDEX:
             return self.sortName.count
             
-        case sectionNames.index(of: DISTANCE)!:
+        case DISTANCE_INDEX:
             return self.distanceName.count
             
-        case sectionNames.index(of: DEALS)!:
+        case DEALS_INDEX:
             return dealsValue.count
         default: return 0
         }
@@ -131,24 +147,24 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         switch (indexPath as NSIndexPath).section {
-        case sectionNames.index(of: CATEGORY)!:
+        case CATEGORY_INDEX:
             return 44
             
-        case sectionNames.index(of: SORT)!:
+        case SORT_INDEX:
             if sortSwitchOn {
                 return 44
             } else {
                 return (indexPath as NSIndexPath).row == 0 ? 44 : 0
             }
-
-        case sectionNames.index(of: DISTANCE)!:
+            
+        case DISTANCE_INDEX:
             if distanceSwitchOn {
                 return 44
             } else {
                 return (indexPath as NSIndexPath).row == 0 ? 44 : 0
             }
             
-        case sectionNames.index(of: DEALS)!:
+        case DEALS_INDEX:
             return 44
         default: return 300
         }
@@ -157,62 +173,53 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch (indexPath as NSIndexPath).section {
             
-        case sectionNames.index(of: CATEGORY)!:
+        case CATEGORY_INDEX:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
             cell.switchLabel.text = categories[indexPath.row]["name"]
-            cell.delegate = self
             cell.onSwitch.isOn = switchStates[indexPath.row] ?? false
+            cell.delegate = self
             return cell
-        
-        case sectionNames.index(of: SORT)!:
+            
+        case SORT_INDEX:
             let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCell", for: indexPath) as! CheckCell
             cell.checkLabel.text = sortName[indexPath.row]
-            cell.sectionName = SORT
-            cell.delegate = self
+            cell.sectionName = SORT_NAME
             
             // Check Best Matched as Default
-//            if (sortName[indexPath.row] == SORT_BEST_MATCHED) {
-//                switchStates[indexPath.row] = true
-//            }
-            cell.isChecked = switchStates[indexPath.row] ?? false
-            
+            if (sortName[indexPath.row] == SORT_BEST_MATCHED) {
+                sortCheckStates[indexPath.row] = true
+                BusinessFilters.sharedInstance.sort = sortName.index(of:SORT_BEST_MATCHED)
+            }
+            cell.isChecked = sortCheckStates[indexPath.row] ?? false
+            cell.delegate = self
             return cell
             
-        case sectionNames.index(of: DISTANCE)!:
+        case DISTANCE_INDEX:
             let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCell", for: indexPath) as! CheckCell
             cell.checkLabel.text = distanceName[indexPath.row]
-            cell.sectionName = DISTANCE
+            cell.sectionName = DISTANCE_NAME
+            
+            // Check Best Matched as Default
+            if (distanceName[indexPath.row] == DISTANCE_BEST_MATCHED) {
+                distanceCheckStates[indexPath.row] = true
+                BusinessFilters.sharedInstance.radius = distanceName.index(of:SORT_BEST_MATCHED)
+            }
+            cell.isChecked = distanceCheckStates[indexPath.row] ?? false
             cell.delegate = self
-            cell.isChecked = switchStates[indexPath.row] ?? false
             return cell
             
-        case sectionNames.index(of: DEALS)!:
+        case DEALS_INDEX:
             let cell = tableView.dequeueReusableCell(withIdentifier: "CheckCell", for: indexPath) as! CheckCell
             cell.checkLabel.text = dealsValue[indexPath.row]
+            cell.sectionName = DEALS_NAME
+            cell.isChecked = dealsCheckStates[indexPath.row] ?? false
             cell.delegate = self
-            cell.isChecked = switchStates[indexPath.row] ?? false
             return cell
             
         default:
             return UITableViewCell()
         }
     }
-    
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        switch (indexPath as NSIndexPath).section {
-//        case sectionNames.index(of: SORT)!:
-//            
-//        case sectionNames.index(of: DISTANCE)!:
-//        default:
-//        }
-//        
-//        if (indexPath as NSIndexPath).section == 1 {
-//            if (indexPath as NSIndexPath).row != 0 {
-//                selectedLanguage = languages[(indexPath as NSIndexPath).row - 1]
-//                tableView.reloadSections(IndexSet(integer: 1), with: .none)
-//            }
-//        }
-//    }
 }
 
 //MARK: - Switch Cell methods
@@ -235,18 +242,42 @@ extension FiltersViewController: DropdownCellDelegate {
 //MARK: - Check Cell methods
 extension FiltersViewController: CheckCellDelegate {
     func checkCell(checkCell: CheckCell, didChangeValue value: Bool) {
-        let indexPath = tableView.indexPath(for: checkCell)!
-        switchStates[indexPath.row] = value
         
+        let indexPath = tableView.indexPath(for: checkCell)!
         switch checkCell.sectionName{
-        case SORT:
+            
+        case SORT_NAME:
+            // Allow only one cell checked
+            for row in 0..<tableView.numberOfRows(inSection: SORT_INDEX){
+                let currentIndexPath = NSIndexPath(row: row, section: SORT_INDEX)
+                let cell = tableView.cellForRow(at: currentIndexPath as IndexPath) as! CheckCell
+                if currentIndexPath as IndexPath == indexPath{
+                    cell.isChecked = true
+                } else {
+                    cell.isChecked = false
+                }
+                sortCheckStates[row] = cell.isChecked
+            }
             BusinessFilters.sharedInstance.sort = sortName.index(of: checkCell.checkLabel.text!)
-        case DISTANCE:
+            
+            
+        case DISTANCE_NAME:
+            // Allow only one cell checked
+            for row in 0..<tableView.numberOfRows(inSection: DISTANCE_INDEX){
+                let currentIndexPath = NSIndexPath(row: row, section: DISTANCE_INDEX)
+                let cell = tableView.cellForRow(at: currentIndexPath as IndexPath) as! CheckCell
+                if currentIndexPath as IndexPath == indexPath{
+                    cell.isChecked = true
+                } else {
+                    cell.isChecked = false
+                }
+                distanceCheckStates[row] = cell.isChecked
+            }
             BusinessFilters.sharedInstance.radius = distanceName.index(of: checkCell.checkLabel.text!)
+            
         default:
+            dealsCheckStates[indexPath.row] = value
             BusinessFilters.sharedInstance.deals = value
         }
-        
-        //print(value)
     }
 }
