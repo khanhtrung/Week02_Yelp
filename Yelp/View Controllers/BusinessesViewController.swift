@@ -14,6 +14,7 @@ class BusinessesViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     var businesses: [Business]!
     var searchBar: UISearchBar!
+    var businessFilters = BusinessFilters()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,24 +36,18 @@ class BusinessesViewController: UIViewController {
     }
     
     func doSearch(){
-        
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        let searchString = searchBar.text!
         
-        
-        Business.search(with: searchString) { (businesses: [Business]?, error: Error?) in
+        Business.searchUsingBusinessFilters() { (businesses: [Business]?, error: Error?) in
             if let businesses = businesses {
                 self.businesses = businesses
                 self.tableView.reloadData()
                 
-                for business in businesses {
+                for business in businesses {                    
                     print(business.name!)
-                    print(business.address!)
-                    
-                MBProgressHUD.hide(for: self.view, animated: true)
                 }
+                MBProgressHUD.hide(for: self.view, animated: true)
             }
-            
         }
         
         // Example of Yelp search with more search options specified
@@ -113,7 +108,7 @@ extension BusinessesViewController: UISearchBarDelegate{
     
     // called when keyboard search button pressed
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        //searchSettings.searchString = searchBar.text
+        BusinessFilters.sharedInstance.searchTerm = searchBar.text
         searchBar.resignFirstResponder()
         doSearch()
     }
@@ -121,6 +116,7 @@ extension BusinessesViewController: UISearchBarDelegate{
     // called when cancel button pressed
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
+        BusinessFilters.sharedInstance.searchTerm = ""
         searchBar.resignFirstResponder()
         doSearch()
     }

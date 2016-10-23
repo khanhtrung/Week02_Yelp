@@ -17,6 +17,15 @@ class Business: NSObject {
     let ratingImageURL: URL?
     let reviewCount: NSNumber?
     
+    // Creates a text representation of a GitHub repo
+    override var description: String {
+        return "[Name: \(self.name)]" +
+            "\n\t[address: \(self.address)]" +
+            "\n\t[categories: \(self.categories)]" +
+            "\n\t[distance: \(self.distance)]" +
+        "\n\t[reviewCount: \(self.reviewCount)]"
+    }
+    
     init(dictionary: NSDictionary) {
         name = dictionary["name"] as? String
         
@@ -90,6 +99,10 @@ class Business: NSObject {
     
     class func search(with term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: @escaping ([Business]?, Error?) -> ()) -> () {
         YelpClient.shared().search(with: term, sort: sort, categories: categories, deals: deals, completion: completion)
+    }
+    
+    class func searchUsingBusinessFilters(completion: @escaping ([Business]?, Error?) -> ()) {
+        YelpClient.shared().searchUsingBusinessFilters(completion: completion)
     }
     
     class func yelpCategories() -> [[String:String]]{
