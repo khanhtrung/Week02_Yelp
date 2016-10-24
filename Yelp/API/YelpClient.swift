@@ -147,11 +147,14 @@ class YelpClient: BDBOAuth1RequestOperationManager {
             
             let selectedLimitType = limit
             switch selectedLimitType {
+            
             case 0:
-                params["limit"] = (5) as AnyObject?
+                break
             case 1:
-                params["limit"] = (10) as AnyObject?
+                params["limit"] = (5) as AnyObject?
             case 2:
+                params["limit"] = (10) as AnyObject?
+            case 3:
                 params["limit"] = (15) as AnyObject?
             default:
                 break

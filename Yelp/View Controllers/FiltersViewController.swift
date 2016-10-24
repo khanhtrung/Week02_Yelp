@@ -32,6 +32,7 @@ let DISTANCE_20 = "20 miles"
 
 let DEALS_OFFERING = "Offering a Deal"
 
+let LIMIT_NONE = "None"
 let LIMIT_5 = "5 results to return"
 let LIMIT_10 = "10 results to return"
 let LIMIT_15 = "15 results to return"
@@ -119,7 +120,7 @@ class FiltersViewController: UIViewController {
         self.dealsValue = [DEALS_OFFERING]
         
         self.limitName = [String]()
-        self.limitName = [LIMIT_5,LIMIT_10,LIMIT_15]
+        self.limitName = [LIMIT_NONE,LIMIT_5,LIMIT_10,LIMIT_15]
     }
 }
 
@@ -238,10 +239,10 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate {
             cell.checkLabel.text = limitName[indexPath.row]
             cell.sectionName = LIMIT_NAME
             
-            // Check 15 results as Default
-            if (limitName[indexPath.row] == LIMIT_15) {
+            // Check unlimit as Default
+            if (limitName[indexPath.row] == LIMIT_NONE) {
                 limitCheckStates[indexPath.row] = true
-                BusinessFilters.sharedInstance.limit = limitName.index(of:LIMIT_15)
+                BusinessFilters.sharedInstance.limit = limitName.index(of:LIMIT_NONE)
             }
             cell.isChecked = limitCheckStates[indexPath.row] ?? false
             cell.delegate = self
